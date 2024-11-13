@@ -17,7 +17,24 @@ std::vector<std::vector<cv::Point>> find_contours(const cv::Mat& input) {
      * 运行测试点，你找到的轮廓与答案的轮廓一样就行。
      */
     
+    
+    cv::Mat gray_image;
+    cv::cvtColor(input, gray_image, cv::COLOR_BGR2GRAY);
+
+    
+    cv::Mat binary_image;
+    cv::threshold(gray_image, binary_image, 127, 255, cv::THRESH_BINARY);
+
+    std::vector<std::vector<cv::Point>> contours;
+    std::vector<cv::Vec4i> hierarchy;
+    cv::findContours(binary_image, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
+
     std::vector<std::vector<cv::Point>> res;
-    // IMPLEMENT YOUR CODE HERE
+    for (size_t i = 0; i < hierarchy.size(); ++i) {
+        if (hierarchy[i][2] == -1) {
+            res.push_back(contours[i]);
+        }
+    }
+    
     return res;
 }

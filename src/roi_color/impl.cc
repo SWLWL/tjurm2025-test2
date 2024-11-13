@@ -30,6 +30,71 @@ std::unordered_map<int, cv::Rect> roi_color(const cv::Mat& input) {
      */
     std::unordered_map<int, cv::Rect> res;
     // IMPLEMENT YOUR CODE HERE
+    cv::Mat gray_image;
+    cv::cvtColor(input, gray_image, cv::COLOR_BGR2GRAY);
+
+    
+    cv::Mat binary_image;
+    cv::threshold(gray_image, binary_image, 0, 255, cv::THRESH_BINARY_INV | cv::THRESH_OTSU);
+
+    
+    std::vector<std::vector<cv::Point>> contours;
+    std::vector<cv::Vec4i> hierarchy;
+    cv::findContours(binary_image, contours, hierarchy, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+
+    
+    std::vector<std::vector<cv::Point>> rect_contours;
+
+    
+    for (const auto& contour : contours) {
+        double epsilon = 0.02 * cv::arcLength(contour, true);
+        std::vector<cv::Point> approx;
+        cv::approxPolyDP(contour, approx, epsilon, true);
+
+        if (approx.size() == 4) {
+            rect_contours.push_back(approx);
+        }
+    }
+
+    
+    if (rect_contours.size() < 3) {
+        return res;
+    }
+
+    
+    for (size_t i = 0; i < 3; ++i) {
+        
+        cv::Rect rect = cv::boundingRect(rect_contours[i]);
+
+        
+        cv::Mat roi = input(rect);
+
+        
+        int blue_count = 0;
+        int green_count = 0;
+        int red_count = 0;
+
+        for (int row = 0; row < roi.rows; ++row) {
+            for (int col = 0; col < roi.cols; ++col) {
+                cv::Vec3b pixel = roi.at<cv::Vec3b>(row, col);
+                blue_count += pixel[0];
+                green_count += pixel[1];
+                red_count += pixel[2];
+            }
+        }
+
+        int color_key;
+        if (blue_count > green_count && blue_count > red_count) {
+            color_key = 0;
+        } else if (green_count > blue_count && green_count > red_count) {
+            color_key = 1;
+        } else {
+            color_key = 2;
+        }
+
+        
+        res[color_key] = rect;
+    }
 
     return res;
 }
