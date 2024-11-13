@@ -25,7 +25,7 @@ std::vector<cv::Mat> threshold(const cv::Mat& src, int threshold_value) {
      *      )
      *      此函数会将 小于阈值的像素点的值设置为 0，大于阈值的像素点的值设置为 maxval
      */
-    cv::Mat gray, dst;
+    cv::Mat gray, dst;    
 
     // TODO: 实现代码
         

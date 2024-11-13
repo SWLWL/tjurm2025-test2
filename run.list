@@ -1,4 +1,8 @@
+split
 
+stop
+
+resize
 roi_color
 compute_iou
 
@@ -8,10 +12,10 @@ compute_area_ratio
 rect
 find_contours
 
-split
+
 erode
 
-resize
+
 
 
 

@@ -16,30 +16,7 @@ std::vector<cv::Mat> split(const cv::Mat& rgb_image) {
      *  1. 此任务会自动判断你的代码是否正确，通过测试 (打印出 pass ) 即可
      */
     std::vector<cv::Mat> result;
-    int rows = rgb_image.rows;
-    int cols = rgb_image.cols;
-
-    cv::Mat blue(rows, cols, CV_8UC1);
-    cv::Mat green(rows, cols, CV_8UC1);
-    cv::Mat red(rows, cols, CV_8UC1);
-
-     for (int i = 0; i < rows; ++i) {
-        for (int j = 0; j < cols; ++j) {
-            
-            cv::Vec3b pixel = rgb_image.at<cv::Vec3b>(i, j);
-            blue.at<uchar>(i, j) = pixel[0];  
-            green.at<uchar>(i, j) = pixel[1]; 
-            red.at<uchar>(i, j) = pixel[2];   
-        }
-    }
-
-    result.push_back(blue);
-    result.push_back(green);
-    result.push_back(red);
-
-
-
-   
-
+    cv::split(rgb_image,result);
     return result;
 }
+
