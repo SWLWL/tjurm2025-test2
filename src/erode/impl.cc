@@ -43,36 +43,29 @@ std::vector<cv::Mat> erode(const cv::Mat& src_erode, const cv::Mat& src_dilate) 
      *     2. dilate 之后的图像中，图中的小脚被消除了(类似答案中的样子)
      *     以上两个检查点需要自己检查，满足条件 则输入 p 通过, 否则输入 f 表示不通过
      */
-    cv::Mat dst_erode, dst_dilate;
+cv::Mat dst_erode, dst_dilate;
 
     // TODO: 在这里实现你的代码
     
 cv::Mat gray_src_erode;
 cv::cvtColor(src_erode, gray_src_erode, cv::COLOR_BGR2GRAY);
-
-
 cv::Mat binary_src_erode;
 cv::threshold(gray_src_erode, binary_src_erode, 50, 255, cv::THRESH_BINARY);
 
-
-cv::Mat erode_kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3));
-
-
-cv::erode(binary_src_erode, dst_erode, erode_kernel);
-
-
 cv::Mat gray_src_dilate;
 cv::cvtColor(src_dilate, gray_src_dilate, cv::COLOR_BGR2GRAY);
-
-
 cv::Mat binary_src_dilate;
 cv::threshold(gray_src_dilate, binary_src_dilate, 50, 255, cv::THRESH_BINARY);
 
+cv::Mat erode_kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(2, 2));
+cv::erode(binary_src_erode, dst_erode, erode_kernel,cv::Point(-1,-1),10);
 
-cv::Mat dilate_kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3));
-
-
+cv::Mat dilate_kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(8,8));
 cv::dilate(binary_src_dilate, dst_dilate, dilate_kernel);
 
-    return {dst_erode, dst_dilate};
+std::vector<cv::Mat> out;
+out.push_back(dst_erode);
+out.push_back(dst_dilate);
+//cv::imshow("膨胀后的图像", dst_dilate);
+return out;
 }

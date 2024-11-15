@@ -32,10 +32,12 @@ std::unordered_map<int, cv::Rect> roi_color(const cv::Mat& input) {
     // IMPLEMENT YOUR CODE HERE
     cv::Mat gray_image;
     cv::cvtColor(input, gray_image, cv::COLOR_BGR2GRAY);
-
-    
     cv::Mat binary_image;
     cv::threshold(gray_image, binary_image, 0, 255, cv::THRESH_BINARY_INV | cv::THRESH_OTSU);
+    
+    //cv::imshow("输入",input);
+    //cv::imshow("灰色",gray_image);
+    //cv::imshow("二值化",binary_image);
 
     
     std::vector<std::vector<cv::Point>> contours;
@@ -43,37 +45,11 @@ std::unordered_map<int, cv::Rect> roi_color(const cv::Mat& input) {
     cv::findContours(binary_image, contours, hierarchy, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
 
     
-    std::vector<std::vector<cv::Point>> rect_contours;
-
-    
-    for (const auto& contour : contours) {
-        double epsilon = 0.02 * cv::arcLength(contour, true);
-        std::vector<cv::Point> approx;
-        cv::approxPolyDP(contour, approx, epsilon, true);
-
-        if (approx.size() == 4) {
-            rect_contours.push_back(approx);
-        }
-    }
-
-    
-    if (rect_contours.size() < 3) {
-        return res;
-    }
-
-    
-    for (size_t i = 0; i < 3; ++i) {
-        
-        cv::Rect rect = cv::boundingRect(rect_contours[i]);
-
-        
+        for (size_t i = 0; i < 3; ++i) {
+        cv::Rect rect = cv::boundingRect(contours[i]);
         cv::Mat roi = input(rect);
 
-        
-        int blue_count = 0;
-        int green_count = 0;
-        int red_count = 0;
-
+        int blue_count = 0, green_count = 0, red_count = 0;
         for (int row = 0; row < roi.rows; ++row) {
             for (int col = 0; col < roi.cols; ++col) {
                 cv::Vec3b pixel = roi.at<cv::Vec3b>(row, col);
@@ -83,18 +59,17 @@ std::unordered_map<int, cv::Rect> roi_color(const cv::Mat& input) {
             }
         }
 
-        int color_key;
+        int dominant_color;
         if (blue_count > green_count && blue_count > red_count) {
-            color_key = 0;
+            dominant_color = 0; 
         } else if (green_count > blue_count && green_count > red_count) {
-            color_key = 1;
+            dominant_color = 1; 
         } else {
-            color_key = 2;
+            dominant_color = 2; 
         }
-
-        
-        res[color_key] = rect;
+        res[dominant_color] = rect;
     }
 
     return res;
 }
+

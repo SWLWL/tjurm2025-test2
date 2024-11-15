@@ -16,42 +16,9 @@ float compute_iou(const cv::Rect& a, const cv::Rect& b) {
      * 通过条件：
      * 运行测试点，显示通过就行，不通过会告诉你哪一组矩形错了。
     */
-    // IMPLEMENT YOUR CODE HERE
-    
-    int a_x = a.x;
-    int a_y = a.y;
-    int a_width = a.width;
-    int a_height = a.height;
-
-    
-    int b_x = b.x;
-    int b_y = b.y;
-    int b_width = b.width;
-    int b_height = b.height;
-
-    
-    int intersection_x = std::max(a_x, b_x);
-    int intersection_y = std::max(a_y, b_y);
-    int intersection_width = std::min(a_x + a_width, b_x + b_width) - intersection_x;
-    int intersection_height = std::min(a_y + a_height, b_y + b_height) - intersection_y;
-
-    
-    intersection_width = std::max(0, intersection_width);
-    intersection_height = std::max(0, intersection_height);
-
-    
-    float intersection_area = static_cast<float>(intersection_width * intersection_height);
-
-    
-    float a_area = static_cast<float>(a_width * a_height);
-
-    
-    float b_area = static_cast<float>(b_width * b_height);
-
-    
-    float union_area = a_area + b_area - intersection_area;
-
-    
-    return intersection_area / union_area;
+    // IMPLEMENT YOUR CODE HERE  
+    int intersectionArea =(a&b).area();
+    float kkk=(float)intersectionArea/(float)(a.area()+b.area()-intersectionArea);
+    return kkk;
    
 }
